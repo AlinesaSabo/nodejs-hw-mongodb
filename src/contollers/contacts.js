@@ -56,6 +56,7 @@ export async function updateContactId(req, res) {
     isFavorite: req.body.isFavorite,
     contactType: req.body.contactType,
   };
+
   const result = await updateContacts(contactId, contact);
 
   if (!result) {
@@ -65,7 +66,7 @@ export async function updateContactId(req, res) {
   res.status(200).json({
     status: 200,
     message: `Successfully patched a contact!`,
-    data: contact,
+    data: result,
   });
 }
 
