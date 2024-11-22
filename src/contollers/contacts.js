@@ -1,40 +1,79 @@
-import { Contact } from '../models/contacts.js';
+import createHttpError from 'http-errors';
+import {
+  getContacts,
+  createContacts,
+  deleteContacts,
+  updateContacts,
+  getContact,
+} from '../services/contacts.js';
 
 export async function getAllContacts(req, res) {
-  try {
-    const contacts = await Contact.find();
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 500,
-      message: 'Internal server error',
-    });
-  }
+  const contacts = await getContacts();
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data: contacts,
+  });
 }
 
 export async function getContactById(req, res) {
   const { contactId } = req.params;
-
-  try {
-    const contact = await Contact.findById(contactId);
-    if (!contact) {
-      return res.status(404).json({
-        message: 'Contact not found',
-      });
-    }
-    res.json({
-      status: 200,
-      message: `Successfully found contact with id ${contactId}!`,
-      data: contact,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 500,
-      message: 'Internal server error',
-    });
+  const contact = await getContact(contactId);
+  if (!contact) {
+    throw createHttpError.NotFound('Contact not found');
   }
+  res.json({
+    status: 200,
+    message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
+  });
+}
+
+export async function postContact(req, res) {
+  const contact = {
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email || '',
+    isFavorite: req.body.isFavorite || false,
+    contactType: req.body.contactType,
+  };
+
+  const result = await createContacts(contact);
+
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a contact!`,
+    data: result,
+  });
+}
+
+export async function updateContactId(req, res) {
+  const { contactId } = req.params;
+  const contact = {
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    isFavorite: req.body.isFavorite,
+    contactType: req.body.contactType,
+  };
+  const result = await updateContacts(contactId, contact);
+
+  if (!result) {
+    throw createHttpError.NotFound('Contact not found');
+  }
+
+  res.status(200).json({
+    status: 200,
+    message: `Successfully patched a contact!`,
+    data: contact,
+  });
+}
+
+export async function deleteContactId(req, res) {
+  const { contactId } = req.params;
+  const result = await deleteContacts(contactId);
+  if (!result) {
+    throw createHttpError.NotFound('Contact not found');
+  }
+  res.status(204).send();
 }
