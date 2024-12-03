@@ -7,7 +7,7 @@ export const contactsSchema = Joi.object({
     .pattern(/^\d{3,20}$/)
     .required(),
   isFavourite: Joi.boolean(),
-  contactType: Joi.string().valid('personal', 'home').required(),
+  contactType: Joi.string().valid('personal', 'home', 'work').required(),
 });
 
 export const replaceContactsSchema = Joi.object({
@@ -15,5 +15,5 @@ export const replaceContactsSchema = Joi.object({
   email: Joi.string().email(),
   phoneNumber: Joi.string().pattern(/^\d{3,20}$/),
   isFavourite: Joi.boolean(),
-  contactType: Joi.string().valid('personal', 'home'),
+  contactType: Joi.string().valid('personal', 'home', 'work'),
 });
