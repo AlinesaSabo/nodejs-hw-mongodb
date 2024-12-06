@@ -3,7 +3,7 @@ import cors from 'cors';
 import pino from 'pino';
 import { notFoundHandler } from '../middlewares/notFoundHandle.js';
 import { errorHandler } from '../middlewares/errorHandler.js';
-import router from '../routers/contacts.js';
+import router from '../routers/index.js';
 
 export function setupServer() {
   const app = express();
