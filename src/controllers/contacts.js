@@ -20,6 +20,7 @@ export async function getAllContacts(req, res) {
     sortBy,
     sortOrder,
     filters,
+    userId: req.user._id,
   });
   res.json({
     status: 200,
@@ -48,6 +49,7 @@ export async function postContact(req, res) {
     email: req.body.email || '',
     isFavorite: req.body.isFavorite || false,
     contactType: req.body.contactType,
+    userId: req.user._id,
   };
 
   const result = await createContacts(contact);

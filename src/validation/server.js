@@ -4,6 +4,7 @@ import pino from 'pino';
 import { notFoundHandler } from '../middlewares/notFoundHandle.js';
 import { errorHandler } from '../middlewares/errorHandler.js';
 import router from '../routers/index.js';
+import cookieParser from 'cookie-parser';
 
 export function setupServer() {
   const app = express();
@@ -15,6 +16,7 @@ export function setupServer() {
     logger.info(`${req.method} ${req.url}`);
     next();
   });
+  app.use(cookieParser());
 
   app.use(router);
 
