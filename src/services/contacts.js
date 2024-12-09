@@ -42,7 +42,7 @@ export async function getContacts({
 }
 
 export function getContact(contactsId, userId) {
-  return Contact.findById({ _id: contactsId, userId });
+  return Contact.findOne({ _id: contactsId, userId });
 }
 
 export function createContacts(contacts) {
