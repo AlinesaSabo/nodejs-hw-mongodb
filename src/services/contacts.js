@@ -49,10 +49,12 @@ export function createContacts(contacts) {
   return Contact.create(contacts);
 }
 
-export function updateContacts(contactsId, contacts) {
-  return Contact.findByIdAndUpdate(contactsId, contacts, { new: true });
+export function updateContacts(contactsId, contacts, userId) {
+  return Contact.findByIdAndUpdate({ _id: contactsId, userId }, contacts, {
+    new: true,
+  });
 }
 
-export function deleteContacts(contactsId) {
-  return Contact.findByIdAndDelete(contactsId);
+export function deleteContacts(contactsId, userId) {
+  return Contact.findByIdAndDelete({ _id: contactsId, userId });
 }

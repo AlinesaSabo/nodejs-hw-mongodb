@@ -22,6 +22,7 @@ export async function getAllContacts(req, res) {
     filters,
     userId: req.user._id,
   });
+
   res.json({
     status: 200,
     message: 'Successfully found contacts!',
@@ -31,7 +32,9 @@ export async function getAllContacts(req, res) {
 
 export async function getContactById(req, res) {
   const { contactId } = req.params;
-  const contact = await getContact(contactId);
+  const userId = req.user._id;
+  const contact = await getContact(contactId, userId);
+
   if (!contact) {
     throw createHttpError.NotFound('Contact not found');
   }
