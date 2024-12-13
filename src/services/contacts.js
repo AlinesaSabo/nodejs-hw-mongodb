@@ -49,12 +49,21 @@ export function createContacts(contacts) {
   return Contact.create(contacts);
 }
 
-export function updateContacts(contactsId, contacts) {
+export async function updateContacts(contactsId, contacts) {
+  const contact = await Contact.findById(contactsId);
+  if (!contact) {
+    throw new Error('Contact not found');
+  }
+
   return Contact.findByIdAndUpdate(contactsId, contacts, {
     new: true,
   });
 }
 
-export function deleteContacts(contactsId) {
+export async function deleteContacts(contactsId) {
+  const contact = await Contact.findById(contactsId);
+  if (!contact) {
+    throw new Error('Contact not found');
+  }
   return Contact.findByIdAndDelete(contactsId);
 }
