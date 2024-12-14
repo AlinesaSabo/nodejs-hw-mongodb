@@ -66,15 +66,16 @@ export async function postContact(req, res) {
 
 export async function updateContactId(req, res) {
   const { contactId } = req.params;
+  const userId = req.user.id;
   const contact = {
     name: req.body.name,
     phoneNumber: req.body.phoneNumber,
     email: req.body.email,
-    isFavorite: req.body.isFavorite,
+    isFavourite: req.body.isFavourite,
     contactType: req.body.contactType,
   };
 
-  const result = await updateContacts(contactId, contact);
+  const result = await updateContacts(contactId, userId, contact);
 
   if (!result) {
     throw createHttpError.NotFound('Contact not found');
@@ -89,7 +90,8 @@ export async function updateContactId(req, res) {
 
 export async function deleteContactId(req, res) {
   const { contactId } = req.params;
-  const result = await deleteContacts(contactId);
+  const userId = req.user.id;
+  const result = await deleteContacts(contactId, userId);
   if (!result) {
     throw createHttpError.NotFound('Contact not found');
   }
