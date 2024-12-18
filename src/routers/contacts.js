@@ -13,6 +13,7 @@ import {
   contactsSchema,
   replaceContactsSchema,
 } from '../validation/contacts.js';
+import { upload } from '../middlewares/multer.js';
 
 const router = express.Router();
 const jsonParser = express.json();
@@ -21,12 +22,14 @@ router.get('/', ctrlWrapper(getAllContacts));
 router.get('/:contactId', isValidId, ctrlWrapper(getContactById));
 router.post(
   '/',
+  upload.single('photo'),
   jsonParser,
   validateBody(contactsSchema),
   ctrlWrapper(postContact),
 );
 router.patch(
   '/:contactId',
+  upload.single('photo'),
   isValidId,
   jsonParser,
   validateBody(replaceContactsSchema),

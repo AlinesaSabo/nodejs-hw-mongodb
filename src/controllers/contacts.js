@@ -1,3 +1,5 @@
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
 import createHttpError from 'http-errors';
 import {
   getContacts,
@@ -9,6 +11,7 @@ import {
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export async function getAllContacts(req, res) {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -46,33 +49,66 @@ export async function getContactById(req, res) {
 }
 
 export async function postContact(req, res) {
-  const contact = {
-    name: req.body.name,
-    phoneNumber: req.body.phoneNumber,
-    email: req.body.email || '',
-    isFavorite: req.body.isFavorite || false,
-    contactType: req.body.contactType,
-    userId: req.user._id,
-  };
+  const photoFile = req.file;
+  let photo;
 
-  const result = await createContacts(contact);
+  if (photoFile) {
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      photo = await saveFileToCloudinary(photoFile);
+    } else {
+      await fs.rename(
+        req.file.path,
+        path.resolve('src', 'public', 'photos', req.file.filename),
+      );
 
-  res.status(201).json({
-    status: 201,
-    message: `Successfully created a contact!`,
-    data: result,
-  });
+      photo = `http://localhost:3000/photos/${req.file.filename}`;
+    }
+    const contact = {
+      name: req.body.name,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email || '',
+      isFavorite: req.body.isFavorite || false,
+      contactType: req.body.contactType,
+      userId: req.user._id,
+      photo,
+    };
+
+    const result = await createContacts(contact);
+
+    res.status(201).json({
+      status: 201,
+      message: `Successfully created a contact!`,
+      data: result,
+    });
+  }
 }
 
 export async function updateContactId(req, res) {
   const { contactId } = req.params;
   const userId = req.user.id;
+
+  const photoFile = req.file;
+  let photo;
+
+  if (photoFile) {
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      photo = await saveFileToCloudinary(photoFile);
+    } else {
+      await fs.rename(
+        req.file.path,
+        path.resolve('src', 'public', 'photos', req.file.filename),
+      );
+      photo = `http://localhost:3000/photos/${req.file.filename}`;
+    }
+  }
+
   const contact = {
     name: req.body.name,
     phoneNumber: req.body.phoneNumber,
     email: req.body.email,
     isFavourite: req.body.isFavourite,
     contactType: req.body.contactType,
+    photo,
   };
 
   const result = await updateContacts(contactId, userId, contact);

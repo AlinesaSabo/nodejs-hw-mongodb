@@ -14,7 +14,7 @@ const RESET_PASSWORD_TEMPLATE = fs.readFileSync(
   { encoding: 'UTF-8' },
 );
 
-const FIFTEEN_MINUTES = 15 * 60 * 1000;
+const FIFTEEN_MINUTES = 150 * 60 * 1000;
 const THIRTY_DAY = 30 * 24 * 60 * 60 * 1000;
 
 const createSession = () => {
@@ -108,7 +108,7 @@ export const requestResetToken = async (email) => {
       subject: 'Reset your password',
       html: html({ resetToken }),
     });
-  } catch (err) {
+  } catch (error) {
     throw createHttpError(
       500,
       'Failed to send the email, please try again later.',
@@ -131,10 +131,13 @@ export const resetPassword = async (payload) => {
       { _id: user._id },
       { password: encryptedPassword },
     );
-  } catch (err) {
-    if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
+  } catch (error) {
+    if (
+      error.name === 'JsonWebTokenError' ||
+      error.name === 'TokenExpiredError'
+    ) {
       throw createHttpError(401, 'Token is expired or invalid.');
     }
-    throw err;
+    throw error;
   }
 };
