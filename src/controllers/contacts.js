@@ -50,7 +50,7 @@ export async function getContactById(req, res) {
 
 export async function postContact(req, res) {
   const photoFile = req.file;
-  let photo;
+  let photo = null;
 
   if (photoFile) {
     if (process.env.ENABLE_CLOUDINARY === 'true') {
@@ -63,24 +63,24 @@ export async function postContact(req, res) {
 
       photo = `http://localhost:3000/photos/${req.file.filename}`;
     }
-    const contact = {
-      name: req.body.name,
-      phoneNumber: req.body.phoneNumber,
-      email: req.body.email || '',
-      isFavorite: req.body.isFavorite || false,
-      contactType: req.body.contactType,
-      userId: req.user._id,
-      photo,
-    };
-
-    const result = await createContacts(contact);
-
-    res.status(201).json({
-      status: 201,
-      message: `Successfully created a contact!`,
-      data: result,
-    });
   }
+  const contact = {
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email || '',
+    isFavorite: req.body.isFavorite || false,
+    contactType: req.body.contactType,
+    userId: req.user._id,
+    photo,
+  };
+
+  const result = await createContacts(contact);
+
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a contact!`,
+    data: result,
+  });
 }
 
 export async function updateContactId(req, res) {
