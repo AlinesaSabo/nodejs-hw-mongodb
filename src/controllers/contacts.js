@@ -50,18 +50,11 @@ export async function getContactById(req, res) {
 
 export async function postContact(req, res) {
   const photoFile = req.file;
-  let photo;
+  let photo = null;
 
   if (photoFile) {
     if (process.env.ENABLE_CLOUDINARY === 'true') {
       photo = await saveFileToCloudinary(photoFile);
-    } else {
-      await fs.rename(
-        req.file.path,
-        path.resolve('src', 'public', 'photos', req.file.filename),
-      );
-
-      photo = `http://localhost:3000/photos/${req.file.filename}`;
     }
   }
   const contact = {
