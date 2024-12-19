@@ -1,4 +1,5 @@
 import { Contact } from '../models/contacts.js';
+import mongoose from 'mongoose';
 
 export async function getContacts({
   page,
