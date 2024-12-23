@@ -1,0 +1,68 @@
+tags:
+  - Contacts
+summary: Create contacts
+operationId: createContacts
+description: 'Create a contacts with payload'
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - name
+          - phoneNumber
+          - contactType
+        properties:
+          name:
+            description: 'Contacts name'
+            type: string
+            example: 'John Doe'
+          phoneNumber:
+            description: 'Contacts numbe'
+            type: number
+            example: 434930943
+          email:
+            description: 'Contacts email'
+            type: string
+            example: 'johndoe@gmail.com'
+          isFavourite:
+            description: 'Contacts favourite'
+            type: boolean
+            example: false
+          contactType:
+            description: 'Whether is contacts on duty'
+            type: string
+            example: ['work', 'home', 'personal']
+          parentId:
+            description: "Contacts's parent id"
+            type: string
+            example: 65e4decdd286b30065d54af9
+          photo:
+            description: "Contacts's photo"
+            type: string
+            format: binary
+responses:
+  '201':
+    description: Creates a contacts
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully created a contacts!
+            data:
+              type: object
+              $ref: ../../components/schemas/contacts.yaml
+  '401':
+    $ref: '../../components/responses/401.yaml'
