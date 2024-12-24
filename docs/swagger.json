@@ -218,16 +218,12 @@
                   "contactType": {
                     "description": "Whether is contacts on duty",
                     "type": "string",
-                    "example": [
+                    "enum": [
                       "work",
                       "home",
                       "personal"
-                    ]
-                  },
-                  "parentId": {
-                    "description": "Contacts's parent id",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
+                    ],
+                    "example": "home"
                   },
                   "photo": {
                     "description": "Contacts's photo",
@@ -387,7 +383,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Successfully deleted contact by id",
             "content": {
               "application/json": {
@@ -401,7 +397,7 @@
                   "properties": {
                     "status": {
                       "type": "integer",
-                      "example": 200
+                      "example": 204
                     },
                     "message": {
                       "type": "string",
@@ -417,7 +413,35 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/401"
+            "404": null,
+            "$ref": "#/components/responses/401",
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 404
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Contact not found"
+                    },
+                    "data": {
+                      "type": "object",
+                      "example": {}
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -575,9 +599,8 @@
           "_id",
           "name",
           "phoneNumber",
-          "email",
-          "isFavourite",
-          "contactType"
+          "contactType",
+          "userId"
         ],
         "properties": {
           "_id": {
