@@ -35,7 +35,7 @@ responses:
               $ref: '../../../components/schemas/contacts.yaml'
   '401':
     $ref: '../../../components/responses/401.yaml'
-    '404':
+  '404':
     description: Contact not found
     content:
       application/json:
